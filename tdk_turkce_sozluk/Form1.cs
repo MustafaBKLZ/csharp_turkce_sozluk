@@ -16,8 +16,6 @@ namespace tdk_turkce_sozluk
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            var appName = Process.GetCurrentProcess().ProcessName + ".exe";
-            SetIE8KeyforWebBrowserControl(appName);
             webBrowser1.ScriptErrorsSuppressed = true;
             string url = "https://sozluk.gov.tr/";
             this.webBrowser1.Navigate(url);
@@ -61,35 +59,7 @@ namespace tdk_turkce_sozluk
         }
 
 
-        private void SetIE8KeyforWebBrowserControl(string appName) //web browser sürümü yükseltiyoruz.
-        {
-            RegistryKey Regkey = null;
-            try
-            {
-                if (Environment.Is64BitOperatingSystem)
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Wow6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
-                else
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
-                if (Regkey == null)
-                {
-                    return;
-                }
-                string FindAppkey = Convert.ToString(Regkey.GetValue(appName));
-                if (FindAppkey == "8000")
-                {
-                    Regkey.Close();
-                    return;
-                }
-                if (string.IsNullOrEmpty(FindAppkey))
-                    Regkey.SetValue(appName, unchecked((int)0x1F40), RegistryValueKind.DWord);
-                FindAppkey = Convert.ToString(Regkey.GetValue(appName));
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                if (Regkey != null) Regkey.Close();
-            }
-        }
+
 
     }
 }
